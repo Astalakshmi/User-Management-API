@@ -1,0 +1,942 @@
+{
+	"info": {
+		"_postman_id": "a1691d49-147f-441a-b0e3-ed2914e21722",
+		"name": "USER API Project",
+		"description": "User API Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19677618",
+		"_collection_link": "https://speeding-firefly-615472-1.postman.co/workspace/API-BOOTCAMP~c804a178-a0ed-4245-9d72-e0a4b33bf325/collection/19677618-a1691d49-147f-441a-b0e3-ed2914e21722?action=share&source=collection_link&creator=19677618"
+	},
+	"item": [
+		{
+			"name": "create New User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let Request = pm.iterationData.get(\"Methods\");\r",
+							"if (Request!=\"post\"){\r",
+							"    pm.execution.skipRequest();\r",
+							"}\r",
+							"else{\r",
+							"    console.log(\"Executing POST REQUEST\")\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"let jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"userId\", jsonData.userId);\r",
+							"pm.collectionVariables.set(\"userFirstName\", jsonData.userFirstName);\r",
+							"\r",
+							"console.log(jsonData.userId);\r",
+							"console.log(jsonData.userFirstName);\r",
+							"\r",
+							"let expected_StatusCode;\r",
+							"let expected_StatusLineMsg;\r",
+							"\r",
+							"// 1. Validate Status Code\r",
+							"pm.test(\"Validate Status code with expected value \", function () {\r",
+							"   \r",
+							"   expected_StatusCode=parseInt(pm.iterationData.get(\"expectedstatuscode\"));   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusCode);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// 2. Validate Status Line\r",
+							"pm.test(\"Valide status Line Message with exceped linemeassage\", function () {\r",
+							"\r",
+							"   expected_StatusLineMsg=pm.iterationData.get(\"expectedstatusline\").trim();   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusLineMsg);\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// 3. Validate Response Headers\r",
+							"pm.test(\"Response headers are correct\", () => {\r",
+							"    pm.expect(pm.response.headers.has(\"Content-Type\")).to.be.true;\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"// 4. Validate response data\r",
+							"\r",
+							"if(expected_StatusCode === 201){    \r",
+							"pm.test(\"Validate response data\", function () {\r",
+							"    pm.expect(jsonData.userFirstName).to.eql(pm.iterationData.get(\"first_name\"));\r",
+							"    pm.expect(jsonData.userLastName).to.eql(pm.iterationData.get(\"last_name\"));\r",
+							"    pm.expect(jsonData.userContactNumber).to.eql(pm.iterationData.get(\"PhoneNumber\"));\r",
+							"    pm.expect(jsonData.userEmailId).to.eql(pm.iterationData.get(\"Email\"));\r",
+							"\r",
+							"    // Corrected fields inside userAddress\r",
+							"    pm.expect(jsonData.userAddress.plotNumber).to.eql(pm.iterationData.get(\"plotnumber\"));\r",
+							"    pm.expect(jsonData.userAddress.street).to.eql(pm.iterationData.get(\"street\"));\r",
+							"    pm.expect(jsonData.userAddress.state).to.eql(pm.iterationData.get(\"state\"));\r",
+							"    pm.expect(jsonData.userAddress.country).to.eql(pm.iterationData.get(\"country\"));\r",
+							"    pm.expect(jsonData.userAddress.zipCode).to.eql(pm.iterationData.get(\"zipcode\"));\r",
+							"\r",
+							"});\r",
+							"}\r",
+							"// 5. Validate Schema\r",
+							"\r",
+							"if(expected_StatusCode === 201){  \r",
+							"\r",
+							"let schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userId\": { \"type\": \"number\" },\r",
+							"    \"userFirstName\": { \"type\": \"string\" },\r",
+							"    \"userLastName\": { \"type\": \"string\" },\r",
+							"    \"userContactNumber\": { \"type\": \"number\" },\r",
+							"    \"userEmailId\": { \"type\": \"string\", \"format\": \"email\" },\r",
+							"    \"creationTime\": { \"type\": \"string\" },\r",
+							"    \"lastModTime\": { \"type\": \"string\" },\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"addressId\": { \"type\": \"number\" },\r",
+							"        \"plotNumber\": {\r",
+							"          \"type\": \"string\",\r",
+							"          \"pattern\": \"^[a-zA-Z0-9\\\\-]+$\"\r",
+							"        },\r",
+							"        \"street\": { \"type\": \"string\" },\r",
+							"        \"state\": { \"type\": \"string\" },\r",
+							"        \"country\": { \"type\": \"string\" },\r",
+							"        \"zipCode\": {\r",
+							"          \"type\": \"number\",\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"addressId\",\r",
+							"        \"plotNumber\",\r",
+							"        \"street\",\r",
+							"        \"state\",\r",
+							"        \"country\",\r",
+							"        \"zipCode\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"userId\",\r",
+							"    \"userFirstName\",\r",
+							"    \"userLastName\",\r",
+							"    \"userContactNumber\",\r",
+							"    \"userEmailId\",\r",
+							"    \"creationTime\",\r",
+							"    \"lastModTime\",\r",
+							"    \"userAddress\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Response follows expected schema\", function () {\r",
+							"  pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userFirstName\":\"{{first_name}}\",\n  \"userLastName\":\"{{last_name}}\",\n  \"userContactNumber\":\"{{PhoneNumber}}\",\n  \"userEmailId\":\"{{Email}}\",\n  \"userAddress\": {\n    \"plotNumber\":\"{{plotnumber}}\",\n    \"street\":\"{{street}}\",\n    \"state\":\"{{state}}\",\n    \"country\":\"{{country}}\",\n    \"zipCode\":\"{{zipcode}}\"\n  }\n}\n\n\n\n",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/uap/createusers",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"uap",
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get All Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"let expected_StatusCode;\r",
+							"let expected_StatusLineMsg;\r",
+							"\r",
+							"// 1. Validate Status Code\r",
+							"\r",
+							"pm.test(\"Validate Status code with expected value \", function () {\r",
+							"   \r",
+							"   expected_StatusCode=parseInt(pm.iterationData.get(\"expectedstatuscode\"));   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusCode);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// 2. Validate Status Line\r",
+							"pm.test(\"Valide status Line Message with exceped linemeassage\", function () {\r",
+							"\r",
+							"   expected_StatusLineMsg=pm.iterationData.get(\"expectedstatusline\").trim();   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusLineMsg);\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// 3. Validate Response Headers\r",
+							"pm.test(\"Response headers are correct\", () => {\r",
+							"    pm.expect(pm.response.headers.has(\"Content-Type\")).to.be.true;\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let Request = pm.iterationData.get(\"Methods\");\r",
+							"if (Request!=\"get\"){\r",
+							"    pm.execution.skipRequest();\r",
+							"}\r",
+							"else{\r",
+							"    console.log(\"Executing GET REQUEST\")\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/uap/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"uap",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get User By Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"let expected_StatusCode;\r",
+							"let expected_StatusLineMsg;\r",
+							"\r",
+							"// 1. Validate Status Code\r",
+							" \r",
+							"pm.test(\"Validate Status code with expected value \", function () {\r",
+							"   \r",
+							"    expected_StatusCode=parseInt(pm.iterationData.get(\"expectedstatuscode\"));   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusCode);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// 2. Validate Status Line\r",
+							"pm.test(\"Valide status Line Message with exceped linemeassage\", function () {\r",
+							"\r",
+							"   expected_StatusLineMsg=pm.iterationData.get(\"expectedstatusline\").trim();   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusLineMsg);\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// 3. Validate Response Headers\r",
+							"pm.test(\"Response headers are correct\", () => {\r",
+							"    pm.expect(pm.response.headers.has(\"Content-Type\")).to.be.true;\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let Request = pm.iterationData.get(\"Methods\");\r",
+							"if (Request!=\"get\"){\r",
+							"    pm.execution.skipRequest();\r",
+							"}\r",
+							"else{\r",
+							"    console.log(\"Executing GET REQUEST\")\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/uap/user/{{userId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"uap",
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get User By First Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"let expected_StatusCode;\r",
+							"let expected_StatusLineMsg;\r",
+							"\r",
+							"// 1. Validate Status Code\r",
+							"      \r",
+							"pm.test(\"Validate Status code with expected value \", function () {\r",
+							"   \r",
+							"   let expected_StatusCode=parseInt(pm.iterationData.get(\"expectedstatuscode\"));   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusCode);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// 2. Validate Status Line\r",
+							"pm.test(\"Valide status Line Message with exceped linemeassage\", function () {\r",
+							"\r",
+							"   let expected_StatusLineMsg=pm.iterationData.get(\"expectedstatusline\").trim();   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusLineMsg);\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// 3. Validate Response Headers\r",
+							"pm.test(\"Response headers are correct\", () => {\r",
+							"    pm.expect(pm.response.headers.has(\"Content-Type\")).to.be.true;\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let Request = pm.iterationData.get(\"Methods\");\r",
+							"if (Request!=\"get\"){\r",
+							"    pm.execution.skipRequest();\r",
+							"}\r",
+							"else{\r",
+							"    console.log(\"Executing GET REQUEST\")\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/uap/users/username/{{userFirstName}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"uap",
+						"users",
+						"username",
+						"{{userFirstName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"let Request = pm.iterationData.get(\"Methods\");\r",
+							"if (Request!=\"put\"){\r",
+							"    pm.execution.skipRequest();\r",
+							"}\r",
+							"else{\r",
+							"    console.log(\"Executing PUT REQUEST\")\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"let jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"userId\", jsonData.userId);\r",
+							"pm.collectionVariables.set(\"userFirstName\", jsonData.userFirstName);\r",
+							"\r",
+							"console.log(jsonData.userId);\r",
+							"console.log(jsonData.userFirstName);\r",
+							"\r",
+							"let expected_StatusCode;\r",
+							"let expected_StatusLineMsg;\r",
+							"\r",
+							"// 1. Validate Status Code\r",
+							"pm.test(\"Validate Status code with expected value \", function () {\r",
+							"   \r",
+							"   expected_StatusCode=parseInt(pm.iterationData.get(\"expectedstatuscode\"));   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusCode);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// 2. Validate Status Line\r",
+							"pm.test(\"Valide status Line Message with exceped linemeassage\", function () {\r",
+							"\r",
+							"   expected_StatusLineMsg=pm.iterationData.get(\"expectedstatusline\").trim();   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusLineMsg);\r",
+							"  \r",
+							"});\r",
+							"// 3. Validate Response Headers\r",
+							"pm.test(\"Response headers are correct\", () => {\r",
+							"    pm.expect(pm.response.headers.has(\"Content-Type\")).to.be.true;\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"// 4. Validate response data\r",
+							"if(expected_StatusCode === 200){   \r",
+							"pm.test(\"Validate response data\", function () {\r",
+							"    pm.expect(jsonData.userFirstName).to.eql(pm.iterationData.get(\"first_name\"));\r",
+							"    pm.expect(jsonData.userLastName).to.eql(pm.iterationData.get(\"last_name\"));\r",
+							"    pm.expect(jsonData.userContactNumber).to.eql(pm.iterationData.get(\"PhoneNumber\"));\r",
+							"    pm.expect(jsonData.userEmailId).to.eql(pm.iterationData.get(\"Email\"));\r",
+							"\r",
+							"    // Corrected fields inside userAddress\r",
+							"    pm.expect(jsonData.userAddress.plotNumber).to.eql(pm.iterationData.get(\"plotnumber\"));\r",
+							"    pm.expect(jsonData.userAddress.street).to.eql(pm.iterationData.get(\"street\"));\r",
+							"    pm.expect(jsonData.userAddress.state).to.eql(pm.iterationData.get(\"state\"));\r",
+							"    pm.expect(jsonData.userAddress.country).to.eql(pm.iterationData.get(\"country\"));\r",
+							"    pm.expect(jsonData.userAddress.zipCode).to.eql(pm.iterationData.get(\"zipcode\"));\r",
+							"\r",
+							"});\r",
+							"}\r",
+							"// 5. Validate Schema\r",
+							"\r",
+							"if(expected_StatusCode === 200){   \r",
+							"let schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userId\": { \"type\": \"number\" },\r",
+							"    \"userFirstName\": { \"type\": \"string\" },\r",
+							"    \"userLastName\": { \"type\": \"string\" },\r",
+							"    \"userContactNumber\": { \"type\": \"number\" },\r",
+							"    \"userEmailId\": { \"type\": \"string\", \"format\": \"email\" },\r",
+							"    \"creationTime\": { \"type\": \"string\" },\r",
+							"    \"lastModTime\": { \"type\": \"string\" },\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"addressId\": { \"type\": \"number\" },\r",
+							"        \"plotNumber\": {\r",
+							"          \"type\": \"string\",\r",
+							"          \"pattern\": \"^[a-zA-Z0-9\\\\-]+$\"\r",
+							"        },\r",
+							"        \"street\": { \"type\": \"string\" },\r",
+							"        \"state\": { \"type\": \"string\" },\r",
+							"        \"country\": { \"type\": \"string\" },\r",
+							"        \"zipCode\": {\r",
+							"          \"type\": \"number\",\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"addressId\",\r",
+							"        \"plotNumber\",\r",
+							"        \"street\",\r",
+							"        \"state\",\r",
+							"        \"country\",\r",
+							"        \"zipCode\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"userId\",\r",
+							"    \"userFirstName\",\r",
+							"    \"userLastName\",\r",
+							"    \"userContactNumber\",\r",
+							"    \"userEmailId\",\r",
+							"    \"creationTime\",\r",
+							"    \"lastModTime\",\r",
+							"    \"userAddress\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Response follows expected schema\", function () {\r",
+							"  pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userFirstName\":\"{{first_name}}\",\n  \"userLastName\":\"{{last_name}}\",\n  \"userContactNumber\":\"{{PhoneNumber}}\",\n  \"userEmailId\":\"{{Email}}\",\n  \"userAddress\": {\n    \"plotNumber\":\"{{plotnumber}}\",\n    \"street\":\"{{street}}\",\n    \"state\":\"{{state}}\",\n    \"country\":\"{{country}}\",\n    \"zipCode\":\"{{zipcode}}\"\n  }\n}\n",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/uap/updateuser/{{userId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"uap",
+						"updateuser",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update User Fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"let expected_StatusCode;\r",
+							"let expected_StatusLineMsg;\r",
+							"// 1. Validate Status Code\r",
+							"pm.test(\"Validate Status code with expected value \", function () {\r",
+							"   \r",
+							"   expected_StatusCode=parseInt(pm.iterationData.get(\"expectedstatuscode\"));   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusCode);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// 2. Validate Status Line\r",
+							"pm.test(\"Valide status Line Message with exceped linemeassage\", function () {\r",
+							"\r",
+							"   expected_StatusLineMsg=pm.iterationData.get(\"expectedstatusline\").trim();   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusLineMsg);\r",
+							"  \r",
+							"});\r",
+							"// 3. Validate Response Headers\r",
+							"pm.test(\"Response headers are correct\", () => {\r",
+							"    pm.expect(pm.response.headers.has(\"Content-Type\")).to.be.true;\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// 4. Validate Schema\r",
+							"\r",
+							"\r",
+							"if(expected_StatusCode === 200){  \r",
+							"let schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userId\": { \"type\": \"number\" },\r",
+							"    \"userFirstName\": { \"type\": \"string\" },\r",
+							"    \"userLastName\": { \"type\": \"string\" },\r",
+							"    \"userContactNumber\": { \"type\": \"number\" },\r",
+							"    \"userEmailId\": { \"type\": \"string\", \"format\": \"email\" },\r",
+							"    \"creationTime\": { \"type\": \"string\" },\r",
+							"    \"lastModTime\": { \"type\": \"string\" },\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"addressId\": { \"type\": \"number\" },\r",
+							"        \"plotNumber\": {\r",
+							"          \"type\": \"string\",\r",
+							"          \"pattern\": \"^[a-zA-Z0-9\\\\-]+$\"\r",
+							"        },\r",
+							"        \"street\": { \"type\": \"string\" },\r",
+							"        \"state\": { \"type\": \"string\" },\r",
+							"        \"country\": { \"type\": \"string\" },\r",
+							"        \"zipCode\": {\r",
+							"          \"type\": \"number\",\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"addressId\",\r",
+							"        \"plotNumber\",\r",
+							"        \"street\",\r",
+							"        \"state\",\r",
+							"        \"country\",\r",
+							"        \"zipCode\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"userId\",\r",
+							"    \"userFirstName\",\r",
+							"    \"userLastName\",\r",
+							"    \"userContactNumber\",\r",
+							"    \"userEmailId\",\r",
+							"    \"creationTime\",\r",
+							"    \"lastModTime\",\r",
+							"    \"userAddress\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Response follows expected schema\", function () {\r",
+							"  pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let Request = pm.iterationData.get(\"Methods\");\r",
+							"if (Request!=\"patch\"){\r",
+							"    pm.execution.skipRequest();\r",
+							"}\r",
+							"else{\r",
+							"    console.log(\"Executing Patch REQUEST\")\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \r\n    \"userEmailId\":\"{{Email}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/uap/updateuserfields/{{userId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"uap",
+						"updateuserfields",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete By User Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Validate Status Code\r",
+							"\r",
+							"pm.test(\"Validate Status code with expected value \", function () {\r",
+							"   \r",
+							"   let expected_StatusCode=parseInt(pm.iterationData.get(\"expectedstatuscode\"));   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusCode);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// 2. Validate Status Line\r",
+							"pm.test(\"Valide status Line Message with exceped linemeassage\", function () {\r",
+							"\r",
+							"   let expected_StatusLineMsg=pm.iterationData.get(\"expectedstatusline\").trim();   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusLineMsg);\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// 3. Validate Response Headers\r",
+							"pm.test(\"Response headers are correct\", () => {\r",
+							"    pm.expect(pm.response.headers.has(\"Content-Type\")).to.be.true;\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let Request = pm.iterationData.get(\"Methods\");\r",
+							"let extra = pm.iterationData.get(\"Methods_scenario\")\r",
+							"if (Request === \"delete\" && extra === \"delete_firstname\") {\r",
+							"    console.log(\" Executing DELETE REQUEST\");\r",
+							"} else {\r",
+							"    pm.execution.skipRequest();\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/uap/deleteuser/username/{{userFirstName}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"uap",
+						"deleteuser",
+						"username",
+						"{{userFirstName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete By User Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Validate Status Code\r",
+							"\r",
+							"pm.test(\"Validate Status code with expected value \", function () {\r",
+							"   \r",
+							"   let expected_StatusCode=parseInt(pm.iterationData.get(\"expectedstatuscode\"));   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusCode);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// 2. Validate Status Line\r",
+							"pm.test(\"Valide status Line Message with exceped linemeassage\", function () {\r",
+							"\r",
+							"   let expected_StatusLineMsg=pm.iterationData.get(\"expectedstatusline\").trim();   //from csv file\r",
+							"   pm.response.to.have.status(expected_StatusLineMsg);\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// 3. Validate Response Headers\r",
+							"pm.test(\"Response headers are correct\", () => {\r",
+							"    pm.expect(pm.response.headers.has(\"Content-Type\")).to.be.true;\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let Request = pm.iterationData.get(\"Methods\");\r",
+							"let extra = pm.iterationData.get(\"Methods_scenario\")\r",
+							"if (Request === \"delete\" && extra === \"delete_user_id\") {\r",
+							"    console.log(\"Executing DELETE REQUEST\");\r",
+							"} else {\r",
+							"    pm.execution.skipRequest();\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/uap/deleteuser/{{userId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"uap",
+						"deleteuser",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{username}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "userFirstName",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

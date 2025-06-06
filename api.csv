@@ -1,0 +1,18 @@
+Tescases,Methods,Methods_scenario,first_name,last_name,PhoneNumber,Email,plotnumber,street,state,country,zipcode,expectedstatuscode,expectedstatusline,Type_of_Testing
+Create new user-[Used for delete_username ],post,,madona,robert,6504359424,grey.sh@gmail.com,99-B,Main Street,California,USA,94016,201,Created,Positive
+Get all users,get,,,,,,,,,,,200,OK,Positive
+Get user by userid,get,,,,,,,,,,,200,OK,Positive
+Get user by username,get,,,,,,,,,,,200,OK,Positive
+Update all fields,put,,raji,dhee,1230047891,raji@gmail.com,25-C,wolf street,California,USA,87459,200,OK,Positive
+Patch-update the user_Emailid,patch,,,,,manju@gmail.com,,,,,,200,OK,Positive
+ Delete the user_firstname,delete,delete_firstname,,,,,,,,,,200,OK,Positive
+ Delete the user_firstname[already deleted userFirstname],delete,delete_firstname,madona,,,,,,,,,404,Not Found,Negative
+Create new user [create userID],post,,laks,pals,9089829734,laksk@gmail.com,10-D,manet Dr,Texas,USA,95084,201,Created,Positive
+Delete the user_id  ,delete,delete_user_id,,,,,,,,,,200,OK,Positive
+Delete the User_ID [already deleted userid],delete,delete_user_id,,,,,,,,,,404,Not Found,Negative
+Patch-update the user_firstname,patch,,lucky,,,,,,,,,404,Not Found,Negative
+Post-already exist user_contacts and email,post,,jamie,john,6504359423,grey@gmail.com,11-u,manet Dr,,UK,78459,409,Conflict,Negative
+Post-already exist user_contacts ,post,,ruby,,6504359423,green@gmail.com,12-c,manet Dr,,AUS,25836,409,Conflict,Negative
+Post-already exist user_email,post,,,pals,7894560127,grey@gmail.com,101-o,manet Dr,Dubai,UAE,,409,Conflict,Negative
+Delete the non exist user_id,delete,delete_user_id,,robert,,lovely@gmail.com,99-B,Main Street,California,USA,94016,400,Bad Request,Negative
+Not_Update all the fields  ,put,,jamie,,,,77-i,,Pondicherry,India,74859,400,Bad Request,Negative
